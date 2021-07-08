@@ -10,10 +10,21 @@ resources:
 
 variables:
   tag: '$(Build.BuildId)'
+- task: Docker@2
+  inputs:
+    command: 'buildAndPush'
+    Dockerfile: '**/Dockerfile'
 
 stages:
 - stage: Build
   displayName: Build image
+- task: DockerCompose@0
+  inputs:
+    containerregistrytype: 'Azure Container Registry'
+    azureSubscription: 'Free Trial(c6d7b624-c28d-4c76-9e34-62d9dae81dc0)'
+    azureContainerRegistry: '{"loginServer":"akstesting1234.azurecr.io", "id" : "/subscriptions/c6d7b624-c28d-4c76-9e34-62d9dae81dc0/resourceGroups/aks-rg1/providers/Microsoft.ContainerRegistry/registries/akstesting1234"}'
+    dockerComposeFile: '**/docker-compose.yml'
+    action: 'Run a Docker Compose command'
   jobs:
   - job: Build
     displayName: Build
